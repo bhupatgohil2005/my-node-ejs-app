@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Status</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #00bfff, #1e90ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+    .box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+      transition: all 0.5s ease;
+    }
+    h2 {
+      margin-bottom: 15px;
+      color: #1e90ff;
+    }
+    .offer {
+      font-size: 18px;
+      color: #444;
+      margin-bottom: 15px;
+    }
+    .timer {
+      font-size: 22px;
+      font-weight: bold;
+      color: #28a745;
+    }
+    .expired {
+      color: #e63946;
+      font-weight: bold;
+      font-size: 20px;
+    }
+  </style>
+  <script>
+  function startCountdown() {
+    // backend sends paymentTime as string
+    let paymentTime = new Date("<%= time %>");  
+
+    let countdownEl = document.getElementById("countdown");
+    let box = document.querySelector(".box");
+
+    function updateTimer() {
+      let now = new Date();
+      let diff = (1000*60*60)-(now - paymentTime); // milliseconds left
+
+      if (diff > 0) {
+        let minutes = Math.floor(diff / 60000);
+        let seconds = Math.floor((diff % 60000) / 1000);
+        countdownEl.innerHTML = minutes + "m " + seconds + "s left";
+      } else {
+        countdownEl.innerHTML = "";
+        box.innerHTML = `
+          <h2>Payment Status</h2>
+          <p class="expired">❌ You are not eligible for credit money</p>
+        `;
+        clearInterval(timer);
+      }
+    }
+
+    updateTimer();
+    let timer = setInterval(updateTimer, 1000); // update every sec
+  }
+</script>
+
+</head>
+<body onload="startCountdown()">
+  <div class="box">
+    <h2>Payment Status</h2>
+    <p class="offer">🎉 Free Money Offer – Credit in 60 minutes</p>
+    <p>₹ <%= amount %> will be credite </p>
+<p>⏳ Time Left: <span id="countdown" class="timer">--:--</span></p>
+
+  </div>
+</body>
+</html>
