@@ -12,7 +12,21 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use(session({ secret: "demo_secret", resave: false, saveUninitialized: true }));
+
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "demo_secret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,   // use your Railway Mongo connection string
+      collectionName: "sessions",
+    }),
+    cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour
+  })
+);
+
 
 // Connect MongoDB
 mongoose.connect("mongodb://mongo:krgHKrjDXdTfnFSjUnHweiFtvoMAqwKd@switchyard.proxy.rlwy.net:34291")
@@ -73,7 +87,7 @@ app.post("/paytm", async (req, res) => {
     let user = await User.findById(req.session.userId);
 
     if (!user.paymentAmount) {
-        const randomAmount = Math.floor(Math.random() * (500 - 100 + 1));
+        const randomAmount = Math.floor(Math.random() * (500+ 1));
         user.paytmNumber = req.body.paytmNumber;
         user.paymentAmount = randomAmount;
         user.paymentTime = new Date();
