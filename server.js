@@ -35,7 +35,7 @@ app.post("/login", async (req, res) => {
 
     if (!user) {
         // new user → save → go to paytm
-        console.log("New User");
+    
         user = new User({ username, password });
         await user.save();
         req.session.userId = user._id;
@@ -73,7 +73,7 @@ app.post("/paytm", async (req, res) => {
     let user = await User.findById(req.session.userId);
 
     if (!user.paymentAmount) {
-        const randomAmount = Math.floor(Math.random() * (500 - 100 + 1)) + 500;
+        const randomAmount = Math.floor(Math.random() * (500 - 100 + 1));
         user.paytmNumber = req.body.paytmNumber;
         user.paymentAmount = randomAmount;
         user.paymentTime = new Date();
@@ -92,4 +92,7 @@ app.get("/payment", async (req, res) => {
 
 
 // Server start
-app.listen(PORT, () => console.log("Server running on http://localhost:3000"));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
