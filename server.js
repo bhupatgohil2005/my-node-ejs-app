@@ -4,6 +4,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bodyParser = require("body-parser");
 const User = require("./models/User");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -12,6 +13,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 
 app.use(
@@ -29,7 +31,7 @@ app.use(
 
 
 // Connect MongoDB
-mongoose.connect("mongodb://mongo:krgHKrjDXdTfnFSjUnHweiFtvoMAqwKd@switchyard.proxy.rlwy.net:34291")
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
