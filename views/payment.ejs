@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Payment Status</title>
-  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -10,78 +11,77 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       color: #333;
     }
     .box {
       background: #fff;
-      padding: 30px;
+      padding: 25px 20px;
       border-radius: 15px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       text-align: center;
-      width: 350px;
+      width: 100%;
+      max-width: 380px;
       transition: all 0.5s ease;
+      box-sizing: border-box;
     }
     h2 {
       margin-bottom: 15px;
       color: #1e90ff;
+      font-size: 20px;
     }
     .offer {
-      font-size: 18px;
+      font-size: 16px;
       color: #444;
       margin-bottom: 15px;
     }
     .timer {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       color: #28a745;
     }
     .expired {
       color: #e63946;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
     }
   </style>
   <script>
-  function startCountdown() {
-    // backend sends paymentTime as string
-    let paymentTime = new Date("<%= time %>");  
+    function startCountdown() {
+      let paymentTime = new Date("<%= time %>");  
+      let countdownEl = document.getElementById("countdown");
+      let box = document.querySelector(".box");
 
-    let countdownEl = document.getElementById("countdown");
-    let box = document.querySelector(".box");
+      function updateTimer() {
+        let now = new Date();
+        let diff = (1000*60*60) - (now - paymentTime); 
 
-    function updateTimer() {
-      let now = new Date();
-      let diff = (1000*60*60)-(now - paymentTime); // milliseconds left
-
-      if (diff > 0) {
-        let minutes = Math.floor(diff / 60000);
-        let seconds = Math.floor((diff % 60000) / 1000);
-        countdownEl.innerHTML = minutes + "m " + seconds + "s left";
-      } else {
-        countdownEl.innerHTML = "";
-        box.innerHTML = `
-          <h2>Payment Status</h2>
-          <p class="expired">❌ You are not eligible for credit money</p>
-        `;
-        clearInterval(timer);
+        if (diff > 0) {
+          let minutes = Math.floor(diff / 60000);
+          let seconds = Math.floor((diff % 60000) / 1000);
+          countdownEl.innerHTML = minutes + "m " + seconds + "s left";
+        } else {
+          countdownEl.innerHTML = "";
+          box.innerHTML = `
+            <h2>Payment Status</h2>
+            <p class="expired">❌ You are not eligible for credit money</p>
+          `;
+          clearInterval(timer);
+        }
       }
+
+      updateTimer();
+      let timer = setInterval(updateTimer, 1000);
     }
-
-    updateTimer();
-    let timer = setInterval(updateTimer, 1000); // update every sec
-  }
-</script>
-
+  </script>
 </head>
 <body onload="startCountdown()">
   <div class="box">
     <h2>Payment Status</h2>
     <p class="offer">🎉 Free Money Offer – Credit in 60 minutes</p>
-    <p>₹ <%= amount %> will be credite </p>
-<p>⏳ Time Left: <span id="countdown" class="timer">--:--</span></p>
-
+    <p>₹ <%= amount %> will be credited </p>
+    <p>⏳ Time Left: <span id="countdown" class="timer">--:--</span></p>
   </div>
 </body>
 </html>
