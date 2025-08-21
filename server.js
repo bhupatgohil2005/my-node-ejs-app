@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const bodyParser = require("body-parser");
 const User = require("./models/User");
 
@@ -14,6 +15,21 @@ app.use(express.static("public"));
 app.use(session({ secret: "demo_secret", resave: false, saveUninitialized: true }));
 
 // Connect MongoDB
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "mysecret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // your MongoDB connection string
+      collectionName: "sessions",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60, // 1 hour
+    },
+  })
+);
+
 mongoose.connect("mongodb://mongo:krgHKrjDXdTfnFSjUnHweiFtvoMAqwKd@switchyard.proxy.rlwy.net:34291")
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
