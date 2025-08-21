@@ -7,7 +7,6 @@ const User = require("./models/User");
 require("dotenv").config();
 
 
-app.use(express.json());
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
