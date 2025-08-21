@@ -91,7 +91,7 @@ app.get("/payment", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 // Server start
-app.listen(PORT,  () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
 
