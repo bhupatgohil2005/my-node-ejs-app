@@ -6,8 +6,8 @@ const User = require("./models/User");
 
 require("dotenv").config();
 
-const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -90,9 +90,9 @@ app.get("/payment", async (req, res) => {
 });
 
 
-
+const PORT = process.env.PORT || 3000;
 // Server start
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT,  () => {
   console.log(`Server running on port ${PORT}`);
 });
 
